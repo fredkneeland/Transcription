@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<!-- For the dropzone for new files -->
+<!-- <script src="./dropzone-5.7.0/dist/dropzone.js"></script> -->
+<!-- <link rel="stylesheet" href="./dropzone-5.7.0/dist/dropzone.css"> -->
+
+
+<!-- For Uploading new audio files -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<input type="file" id="upload" />
+
+<audio controls id="audioElement">
+  <source src="A.mp3" type="audio/mpeg" id="src">
+Your browser does not support the audio element.
+</audio>
+
+<!-- Potential drag and drop place for audio files
+<form action="/file-upload"
+      class="dropzone"
+      id="my-awesome-dropzone">
+      <input type="file" id="upload" />
+</form>
+ -->
+
+
+ <!-- Paragraph for transcribed text -->
+ <p> Transcription: </p>
+
+<script>
+
+
+var audioElement = document.getElementById("audioElement");
+
+var playing = false;
+var text = "Transcription: ";
+playbackRate = 1.0;
+
+// for starting or stopping
+// document.onclick = function() {
+// 	audioElement.play();
+// };
+
+// for updating the time
+document.onkeydown = function(e) {
+	console.log(e.keyCode);
+	// 32 = space
+	if (e.keyCode == '13') { // maybe I should do the enter key to start and stop?
+		if (!playing) {
+			if (audioElement.currentTime > 1) {
+				audioElement.currentTime -= 0.5;
+			}
+			audioElement.play();
+		} else {
+			audioElement.pause();
+		}
+		playing = !playing;
+		
+	} else if (e.keyCode == '37') {
+		audioElement.currentTime -= 2.0
+       // left arrow
+    } else if (e.keyCode == '38') {
+    	// top arrow
+    	playbackRate += 0.25
+    	document.getElementById("audioElement").playbackRate = playbackRate;
+    } else if (e.keyCode == '39') {
+    	audioElement.currentTime += 2.0
+       // right arrow
+    } else if (e.keyCode == '40') {
+    	// bottom arrow
+    	playbackRate -= 0.25
+    	document.getElementById("audioElement").playbackRate = playbackRate;
+    } else if (e.keyCode == '8') {
+    	// delete key
+    	text = text.substring(0, text.length - 1); 
+    	$('p').text(text);
+    } else if (e.keyCode == '180') {
+    	text += ',';
+    	$('p').text(text);
+    } else if (e.keyCode == '190') {
+    	text += '.';
+    	$('p').text(text);
+    } else if (e.keyCode == '191') {
+    	text += '?';
+    	$('p').text(text);
+    } else if (e.keyCode == '49' && e.shiftKey) {
+    	text += '!';
+    	$('p').text(text);
+    } else {
+    	// we want to put text on the screen
+    	if (e.shiftKey) {
+    		text += String.fromCharCode(e.keyCode);
+    	} else {
+    		// we want to lowercase our text
+    		text += String.fromCharCode(e.keyCode).toLowerCase();
+    	}
+    	
+    	$('p').text(text);
+    	// $('p').append(text);
+    }
+}
+
+function handleFiles(event) {
+    var files = event.target.files;
+    $("#src").attr("src", URL.createObjectURL(files[0]));
+    document.getElementById("audioElement").load();
+    document.getElementById("audioElement").playbackRate = 1; //0.5;
+}
+
+document.getElementById("upload").addEventListener("change", handleFiles, false);
+
+
+</script>
+
+</body>
+</html>
